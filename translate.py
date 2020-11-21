@@ -63,8 +63,8 @@ tf.app.flags.DEFINE_boolean("use_cpu", False, "Whether to use the CPU")
 # h36m data parameter
 tf.app.flags.DEFINE_string("action", "walking", "The action to train on. all means all the actions, \
                                                                       all_periodic means walking, eating and smoking")
-tf.app.flags.DEFINE_string("data_dir", os.path.normpath("/content/drive/My Drive/Colab Notebooks/MotionPredictionFiles/data/h3.6m/dataset"), "Data directory")
-tf.app.flags.DEFINE_string("train_dir", os.path.normpath("/content/drive/My Drive/Colab Notebooks/MotionPredictionFiles/experiments/"), "Training directory.")
+tf.app.flags.DEFINE_string("data_dir", os.path.normpath("/data/h3.6m/dataset"), "Data directory")
+tf.app.flags.DEFINE_string("train_dir", os.path.normpath("/experiments"), "Training directory.")
 
 # def FLAGS
 FLAGS = tf.app.flags.FLAGS
