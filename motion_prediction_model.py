@@ -38,8 +38,8 @@ seq2seq_learning_rate_decay_step = 2500  # Every this many steps, do decay.
 seq2seq_max_gradient_norm = 5  # Clip gradients to this norm.  
 
 # seq2seq basic train parameter
-train_batch_size = 16  # Batch size to use during training.
-train_iterations = 500  # Iterations to train for.
+train_batch_size = 128  # Batch size to use during training.
+train_iterations = 100  # Iterations to train for.
 train_test_every = 50  # How often to compute error on the test set.  
 train_save_every = 50  # How often to compute error on the test set.  
 train_checkpoint_load = 0  # Weather to load checkpoint or not.  
@@ -114,11 +114,11 @@ target = keras.Input(shape=(seq2seq_output_size, seq2seq_train_datapoint_size))
 
 # encoder, decoder init, calculate data
 # enc
-enc_output, enc_state = keras.layers.GRU(seq2seq_unit_size, return_state=True, return_sequences=True)(enc_input)
-# enc_output, enc_state = tf.compat.v1.keras.layers.CuDNNGRU(seq2seq_unit_size, return_state=True, return_sequences=True)(enc_input)
+# enc_output, enc_state = keras.layers.GRU(seq2seq_unit_size, return_state=True, return_sequences=True)(enc_input)
+enc_output, enc_state = tf.compat.v1.keras.layers.CuDNNGRU(seq2seq_unit_size, return_state=True, return_sequences=True)(enc_input)
 # dec
-dec_output = keras.layers.GRU(seq2seq_unit_size, return_sequences=True)(dec_input, initial_state=enc_state)
-# dec_output = tf.compat.v1.keras.layers.CuDNNGRU(seq2seq_unit_size, return_sequences=True)(dec_input, initial_state=enc_state)
+# dec_output = keras.layers.GRU(seq2seq_unit_size, return_sequences=True)(dec_input, initial_state=enc_state)
+dec_output = tf.compat.v1.keras.layers.CuDNNGRU(seq2seq_unit_size, return_sequences=True)(dec_input, initial_state=enc_state)
 # reshape
 dec_output = LinearSpaceDecoder(seq2seq_train_datapoint_size)(dec_output)
 

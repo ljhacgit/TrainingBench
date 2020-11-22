@@ -323,7 +323,7 @@ def get_dataset(data, batch_size, iterations, source_seq_len, target_seq_len, da
     all_keys = list(data.keys())
 
     # select dataset size
-    dataset_size = max(batch_size * iterations, 10000000)
+    dataset_size = 10000
 
     # 0~n 까지 수 중, batch_size 크기의 데이터를 선택
     # chosen_keys : [batch_size]
