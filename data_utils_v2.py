@@ -315,6 +315,49 @@ def get_preprocessed_data(actions, seq2seq_input_size, seq2seq_output_size, data
     return train_data, normalize_parameter
 
 
+def get_dataset(data, batch_size, iterations, source_seq_len, target_seq_len, datapoint_size):
+    # train_data, test_data : {(subject, action, subaction):[n, d]}
+
+    # Get a random batch of data from the specified bucket, prepare for step.
+    # get all dic id
+    all_keys = list(data.keys())
+
+    # select dataset size
+    dataset_size = max(batch_size * iterations, 10000000)
+
+    # 0~n 까지 수 중, batch_size 크기의 데이터를 선택
+    # chosen_keys : [batch_size]
+    chosen_keys = np.random.choice(len(all_keys), dataset_size)
+
+    # How many frames in total do we need?
+    total_frames = source_seq_len + target_seq_len
+
+    enc_input = np.zeros((dataset_size, source_seq_len - 1, datapoint_size), dtype=float)
+    dec_input = np.zeros((dataset_size, target_seq_len, datapoint_size), dtype=float)
+    target = np.zeros((dataset_size, target_seq_len, datapoint_size), dtype=float)
+
+    for i in xrange(dataset_size):
+        # 랜덤으로 선택된 데이터 번호의 key(id)
+        the_key = all_keys[chosen_keys[i]]
+        # Get the number of frames, 행 길이가 프래임
+        n, _ = data[the_key].shape
+
+        # Sample somewhere in the middle
+        idx = np.random.randint(16, n - total_frames)
+        # Select the data around the sampled points
+        # 특정 프래임부터 랜덤으로 설정해 잘라냄
+        data_sel = data[the_key][idx:idx + total_frames, :]
+
+        # Add the data
+        # 데이터를 추가
+        enc_input[i, :, 0:datapoint_size] = data_sel[0:source_seq_len - 1, :]
+        dec_input[i, :, 0:datapoint_size] = data_sel[source_seq_len - 1:source_seq_len + target_seq_len - 1, :]
+        target[i, :, 0:datapoint_size] = data_sel[source_seq_len:, 0:datapoint_size]
+
+    # [batch, seq_length, datapoint_size]
+    return enc_input, dec_input, target
+
+
 def get_seq2seq_batch(data, batch_size, source_seq_len, target_seq_len, datapoint_size):
     # train_data, test_data : {(subject, action, subaction):[n, d]}
 
