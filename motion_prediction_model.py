@@ -39,7 +39,7 @@ seq2seq_max_gradient_norm = 5  # Clip gradients to this norm.
 
 # seq2seq basic train parameter
 train_batch_size = 16  # Batch size to use during training.  
-train_iterations = 100  # Iterations to train for.  
+train_iterations = 50000  # Iterations to train for.
 train_test_every = 50  # How often to compute error on the test set.  
 train_save_every = 50  # How often to compute error on the test set.  
 train_checkpoint_load = 0  # Weather to load checkpoint or not.  
@@ -106,7 +106,7 @@ print("Start train with parameter as,")
 print(" train_batch_size         : %d" % train_batch_size)
 print(" train_iterations         : %d" % train_iterations)
 print()
-
+'''
 # save training info
 with open(train_dir + "/train_log.txt", "a") as log_file:
     log_file.write("\n")
@@ -114,7 +114,7 @@ with open(train_dir + "/train_log.txt", "a") as log_file:
     log_file.write(" train_batch_size         : %d\n" % train_batch_size)
     log_file.write(" train_iterations         : %d\n" % train_iterations)
     log_file.write("\n")
-
+'''
 # get data
 actions = define_actions(action)
 # train_data, test_data : {(subject, action, subaction):[n, d]}, normalize_parameter : {parameter_name : data}
@@ -134,9 +134,10 @@ target = keras.Input(shape=(seq2seq_output_size, seq2seq_train_datapoint_size))
 
 # encoder, decoder init, calculate data
 # enc
-enc_output, enc_state = keras.layers.GRU(seq2seq_unit_size, return_state=True, return_sequences=True)(enc_input)
+# enc_output, enc_state = keras.layers.GRU(seq2seq_unit_size, return_state=True, return_sequences=True)(enc_input)
+enc_output, enc_state = tf.compat.v1.keras.layers.GRU(seq2seq_unit_size, return_state=True, return_sequences=True)(enc_input)
 # dec
-dec_output = keras.layers.GRU(seq2seq_unit_size, return_sequences=True)(dec_input, initial_state=enc_state)
+dec_output = tf.compat.v1.keras.layers.GRU(seq2seq_unit_size, return_sequences=True)(dec_input, initial_state=enc_state)
 # reshape
 dec_output = LinearSpaceDecoder(seq2seq_train_datapoint_size)(dec_output)
 
